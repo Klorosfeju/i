@@ -1,4 +1,4 @@
-3.1 Az UTF-8 kódolású legmagasabb.txt állomány Európa legmagasabb épületeinek
+l3.1 Az UTF-8 kódolású legmagasabb.txt állomány Európa legmagasabb épületeinek
 adatait tartalmazza a következő minta szerint (forrás: wikipedia.org):
 név;város;ország;magasság;emelet;épült
 Avaz Twist Tower;Szarajevó;Bosznia-Hercegovina;172;40;2007
@@ -17,48 +17,57 @@ emeleteinek összegét!
 Feltételezheti, hogy nem alakult ki holtverseny.
 3.5 Döntse el, hogy az adatok között található-e olasz épület! A keresését ne folytassa, ha a
 választ meg tudja adni! A képernyőre írást a minta szerint végezze!
+ezzel adunk neveket másik állományben
 class Épület:
     def __init__(self, név, város, ország, magasság, emelet, épült):
         self.név = név
         self.város = város
         self.ország = ország
-        self.magasság = float(magasság.replace(',', '.'))  # Magasságat tizedes ponttal átalakítjuk float-tá
+        self.magasság = float(magasság)
         self.emelet = int(emelet)
         self.épült = int(épült)
 
-def beolvas_legmagasabb(file_path):
+    def __str__(self):
+        return f"{self.név}, {self.város}, {self.ország}, {self.magasság} m, {self.emelet} emelet, épült: {self.épült}"
+
+def beolvasas(file_nev):
     épületek = []
-    with open(file_path, 'r', encoding='utf-8') as file:
-        next(file)  # Első sor fejléc, ezért átugorjuk
-        for sor in file:
-            adatok = sor.strip().split(';')
-            épületek.append(Épület(*adatok))
+    with open(file_nev, "r", encoding="utf-8") as file:
+        fejléc = file.readline().strip().split(';')
+        for line in file:
+            data = line.strip().split(';')
+            épület = Épület(*data)
+            épületek.append(épület)
     return épületek
 
-def hány_épület(épületek):
+def epuletek_szama(épületek):
     return len(épületek)
 
-def emeletek_összege(épületek):
+def emeletek_osszege(épületek):
     return sum(épület.emelet for épület in épületek)
 
-def legmagasabb_épület(épületek):
-    return max(épületek, key=lambda épület: épület.magasság)
+def legmagasabb_epulet(épületek):
+    return max(épületek, key=lambda x: x.magasság)
 
-def van_olasz_épület(épületek):
-    return any(épület.ország.lower() == 'olaszország' for épület in épületek)
+def van_olasz_epulet(épületek):
+    return any(épület.ország.lower() == "olaszország" for épület in épületek)
+
+
+from epulet import beolvasas, epuletek_szama, emeletek_osszege, legmagasabb_epulet, van_olasz_epulet
 
 # Adatok beolvasása
-épületek = beolvas_legmagasabb('legmagasabb.txt')
+épületek = beolvasas("legmagasabb.txt")
 
-# Statisztikák kiíratása
-print(f"3.2 Az állományban {hány_épület(épületek)} épület található.")
-print(f"3.3 Az épületek emeleteinek összege: {emeletek_összege(épületek)}")
-print("3.4 A legmagasabb épület adatai:")
-legmagasabb = legmagasabb_épület(épületek)
-print(f"   Név: {legmagasabb.név}")
-print(f"   Város: {legmagasabb.város}")
-print(f"   Ország: {legmagasabb.ország}")
-print(f"   Magasság: {legmagasabb.magasság} m")
-print(f"   Emeletek száma: {legmagasabb.emelet}")
-print(f"   Épült: {legmagasabb.épült}")
-print(f"3.5 Az állományban {'van' if van_olasz_épület(épületek) else 'nincs'} olasz épület.")
+# 3.2 feladat: Az állományban lévő épületek számának kiírása
+print(f"3.2 Feladat: Az állományban lévő épületek száma: {epuletek_szama(épületek)}")
+
+# 3.3 feladat: Az állományban lévő épületek emeleteinek összegzése és kiírása
+print(f"3.3 Feladat: Az állományban lévő épületek emeleteinek összege: {emeletek_osszege(épületek)}")
+
+# 3.4 feladat: A legmagasabb épület adatainak meghatározása és kiírása
+legmagasabb = legmagasabb_epulet(épületek)
+print(f"3.4 Feladat: A legmagasabb épület adatai:\n{legmagasabb}")
+
+# 3.5 feladat: Az olasz épület létezésének eldöntése és kiírása
+olasz = van_olasz_epulet(épületek)
+print(f"3.5 Feladat: Az állományban {'található' if olasz else 'nincs'} olasz épület.")
